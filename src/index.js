@@ -1,23 +1,29 @@
-console.log("Hello Mintbean!");
-fetch("https://rickandmortyapi.com/graphql", {
-  method: "POST",
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./util/repotWebVitals";
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+const { REACT_APP_STEPZEN_API_KEY, REACT_APP_STEPZEN_URI } = process.env;
 
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
   headers: {
-    "Content-Type": "application/json",
+    Authorization: `Apikey ${REACT_APP_STEPZEN_API_KEY}`,
   },
+  uri: REACT_APP_STEPZEN_URI,
+});
 
-  body: JSON.stringify({
-    query: `
-      query getCharacters {
-        characters {
-          results {
-            name,
-            status
-          }
-        }
-      }
-    `,
-  }),
-})
-  .then((res) => res.json())
-  .then((data) => console.log(data.data));
+ReactDOM.render(
+  <React.StrictMode>
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>
+  </React.StrictMode>,
+  document.getElementById("root")
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
